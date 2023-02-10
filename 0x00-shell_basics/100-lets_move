@@ -1,2 +1,3 @@
 #!/bin/bash
-mve"uppercase_files" /tmp/u  
+mkdir u /tmp/u
+  
