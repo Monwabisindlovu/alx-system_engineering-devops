@@ -1,3 +1,3 @@
 #!/bin/bash
-mkdir u /tmp/u
+mv src/*[A-Z]* /tmp/u
   
