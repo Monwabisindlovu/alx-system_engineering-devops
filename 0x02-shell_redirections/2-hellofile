@@ -1,2 +1,3 @@
 #!/bin/bash
-group's
+cat /etc/passwd
+
