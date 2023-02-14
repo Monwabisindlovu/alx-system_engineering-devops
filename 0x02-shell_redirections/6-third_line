@@ -1,2 +1,2 @@
 #!/bin/bash
-cut -d"\r" -f3 file
+head -3 iacta | tail -1    
