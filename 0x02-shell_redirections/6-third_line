@@ -1,0 +1,2 @@
+#!/bin/bash
+cut -d"\r" -f3 file
