@@ -1,2 +1,2 @@
 #!/bin/bash
-greo -i "bin" /etc/passwd | wc -l
+greo -i "bin" /etc/passwd | wc -1
