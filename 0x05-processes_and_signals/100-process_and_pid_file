@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# This script creates a PID file, displays a message indefinitely,
+# and handles SIGTERM, SIGINT, SIGQUIT signals.
+
+# Function to handle signals
+handle_signal() {
+    # Delete the PID file
+    rm /var/run/myscript.pid
+
+    # Handle specific signals
+    case $1 in
+        SIGTERM)
+            echo "I hate the kill command"
+            ;;
+        SIGINT)
+            echo "Y U no love me?!"
+            ;;
+        SIGQUIT)
+            exit 0
+            ;;
+    esac
+}
+
+# Create the PID file
+echo $$ > /var/run/myscript.pid
+
+# Register the handle_signal function to catch the signals
+trap 'handle_signal SIGTERM' SIGTERM
+trap 'handle_signal SIGINT' SIGINT
+trap 'handle_signal SIGQUIT' SIGQUIT
+
+# Display the message indefinitely
+while true; do
+    echo "To infinity and beyond"
+    sleep 1
+done
