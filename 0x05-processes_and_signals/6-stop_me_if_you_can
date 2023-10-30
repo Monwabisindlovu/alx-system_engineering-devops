@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# This script stops the 4-to-infinity-and-beyond process.
+# This script stops the 4-to_infinity_and_beyond process gracefully.
 
-# Find the process ID (PID) of 4-to_infinity_and_beyond and send a custom signal to terminate it.
-pid=$(pgrep -f "4-to_infinity_and_beyond")
-if [ -n "$pid" ]; then
-  echo "Stopping the 4-to-infinity-and-beyond process..."
-  # Send a custom signal (SIGUSR1) to gracefully terminate the process.
-  kill -USR1 $pid
+# Create a flag file to signal the "4-to_infinity_and_beyond" script to terminate
+terminate_flag="/tmp/terminate_4_to_infinity"
+
+if [ -e "$terminate_flag" ]; then
+    echo "Stopping the 4-to_infinity_and_beyond process..."
+    rm -f "$terminate_flag"
 else
-  echo "Process not found."
+    echo "Process not found."
 fi
-

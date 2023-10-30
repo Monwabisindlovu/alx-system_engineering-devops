@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
 # This script displays "To infinity and beyond" indefinitely with a 2-second delay between each iteration.
 
-while true; do
+# Create a temporary file to serve as a flag for termination
+terminate_flag="/tmp/terminate_4_to_infinity"
+
+# Function to handle termination
+terminate() {
+    rm -f "$terminate_flag"
+    exit 0
+}
+
+# Register the terminate function to catch termination signals
+trap terminate SIGINT SIGTERM
+
+while [ ! -e "$terminate_flag" ]; do
     echo "To infinity and beyond"
     sleep 2
 done
