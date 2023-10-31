@@ -6,8 +6,8 @@ if ARGV.length != 1
   exit 1
 end
 
-# Regular expression to match "hbtn" with 'bt' repeated 2 to 5 times
-regex = /hbt{2,5}n/
+# Regular expression to match "hbn" with 'hbt' or 'hbtn' preceding it
+regex = /hbt+n/
 
 # Input text from the command line argument
 input_text = ARGV[0]
