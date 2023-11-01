@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Create a custom hosts file
+custom_hosts_file="/etc/custom_hosts"
+echo "127.0.0.2 localhost" > "$custom_hosts_file"
+echo "8.8.8.8 facebook.com" >> "$custom_hosts_file"
+
+# Replace the hosts file with the custom_hosts file
+sudo mv "$custom_hosts_file" "/etc/hosts"
+
+# Restart the networking service to apply the changes
+sudo service networking restart
+
+# Verify the changes
+ping localhost
+ping facebook.com
