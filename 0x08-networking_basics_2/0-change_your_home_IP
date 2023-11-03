@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-# Create a backup of the original hosts file
-sudo cp /etc/hosts /etc/hosts.bak
+# Copy the original hosts file to a new file
+cp /etc/hosts ~/hosts.new
 
-# Modify the /etc/hosts file using sed to change IP addresses
-sudo sed -i 's/127.0.0.1/127.0.0.2/g' /etc/hosts
-echo "8.8.8.8 facebook.com" | sudo tee -a /etc/hosts
+# Use sed to replace the IP address for localhost
+sudo sed -i 's/127.0.0.1/127.0.0.2/g' ~/hosts.new
 
-# Clean up temporary files
-rm ~/hosts.new
+# Add an entry to map facebook.com to 8.8.8.8
+echo "8.8.8.8 facebook.com" >> ~/hosts.new
 
-echo "Hosts file updated. localhost now resolves to 127.0.0.2, and facebook.com resolves to 8.8.8.8."
+# Overwrite the original hosts file with the modified one
+cp -f ~/hosts.new /etc/hosts
