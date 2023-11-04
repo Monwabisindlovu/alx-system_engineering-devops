@@ -1,24 +1,25 @@
 #!/usr/bin/env ruby
 
-# Check if an argument is passed
-if ARGV.length != 1
-  puts "Usage: #{$PROGRAM_NAME} <log_file>"
-  exit 1
-end
+# Define a regular expression to extract the desired information
+regex = /\[from:(.+?)\] \[to:(.+?)\] \[flags:(.+?)\]/
 
-# Read the log file
-log_file = File.read(ARGV[0])
+# Check if the script was provided with an argument
+if ARGV.length == 1
+  input = ARGV[0]
 
-# Regular expression to extract sender, receiver, and flags
-regex = /\[from:(?<sender>[^\]]+)\] \[to:(?<receiver>[^\]]+)\] \[flags:(?<flags>[^\]]+)\]/
+  # Use the regular expression to extract the desired information
+  match_data = input.match(regex)
 
-# Match the regular expression in the log file
-matches = log_file.scan(regex)
+  if match_data
+    sender = match_data[1]
+    receiver = match_data[2]
+    flags = match_data[3]
 
-# Output the results
-matches.each do |match|
-  sender = match[0]
-  receiver = match[1]
-  flags = match[2]
-  puts "#{sender},#{receiver},#{flags}"
+    # Output the extracted information
+    puts "#{sender},#{receiver},#{flags}"
+  else
+    puts "No match found in the input."
+  end
+else
+  puts "Usage: #{$0} <log_entry>"
 end
