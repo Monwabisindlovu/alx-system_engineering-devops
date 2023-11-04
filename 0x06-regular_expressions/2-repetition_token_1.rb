@@ -7,7 +7,7 @@ if ARGV.length != 1
 end
 
 # Regular expression to match "hbn" with 'hbt' or 'hbtn' preceding it
-regex = /hbt*n/
+regex = /hb(t|tn)n/
 
 # Input text from the command line argument
 input_text = ARGV[0]
