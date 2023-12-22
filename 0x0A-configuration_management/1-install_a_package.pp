@@ -1,13 +1,6 @@
-# Puppet manifest to execute a command to kill a process named killmenow
-
-# Define the exec resource to kill the process
-package { 'python3-pip':
-  ensure => installed,
-}
-
-package { 'Flask':
+#!/usr/bin/pup
+#Puppet manifest to install Flask using pip3
+package {'flask':
   ensure   => '2.1.0',
-  provider => 'pip3',
-  require  => Package['python3-pip'],
+  provider => 'pip3'
 }
-
