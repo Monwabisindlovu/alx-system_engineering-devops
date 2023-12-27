@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# This script connects to the server using ssh with a private key
+
+# Display a message to confirm that the script is being executed
+echo "Connecting to the server..."
+
+# Use ssh with the private key ~/.ssh/school and the user ubuntu
+ssh -v -i ~/.ssh/school ubuntu@8.8.8.8
+
