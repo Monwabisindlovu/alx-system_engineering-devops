@@ -1,4 +1,3 @@
-# 100-puppet_ssh_config.pp
 # Configures SSH settings for secure connections.
 
 file { '/root/.ssh':
