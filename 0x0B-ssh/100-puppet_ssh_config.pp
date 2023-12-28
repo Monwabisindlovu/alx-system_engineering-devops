@@ -6,9 +6,9 @@ file { '/root/.ssh':
 }
 
 file { '/root/.ssh/config':
-  ensure => 'file',
-  mode   => '0600',
-  content => template('path/to/your/config.erb'),
+  ensure  => 'file',
+  mode    => '0600',
+  content => "Host *\n  IdentityFile ~/.ssh/school\n  PasswordAuthentication no\n",
 }
 
 exec { 'Set correct permissions on .ssh folder':
@@ -18,11 +18,6 @@ exec { 'Set correct permissions on .ssh folder':
 
 exec { 'Set correct permissions on .ssh/config file':
   command => '/bin/chmod 0600 /root/.ssh/config',
-  path    => '/bin',
-}
-
-exec { 'Add IdentityFile to .ssh/config':
-  command => '/bin/echo "IdentityFile ~/.ssh/school" >> /root/.ssh/config',
   path    => '/bin',
 }
 
