@@ -1,24 +1,16 @@
-# Configures SSH settings for secure connections.
+# 100-puppet_ssh_config.pp
 
-file { '/root/.ssh':
-  ensure  => 'directory',
-  mode    => '0700',
+# Turn off password authentication
+file_line { 'Turn off passwd auth':
+  path   => '/root/.ssh/config',
+  line   => 'PasswordAuthentication no',
+  match  => '^#?PasswordAuthentication',
 }
 
-file { '/root/.ssh/config':
-  ensure  => 'file',
-  mode    => '0600',
-  content => "Host *\n  IdentityFile ~/.ssh/school\n  PasswordAuthentication no\n",
+# Declare identity file
+file_line { 'Declare identity file':
+  path   => '/root/.ssh/config',
+  line   => 'IdentityFile ~/.ssh/school',
+  match  => '^#?IdentityFile',
 }
 
-exec { 'Set correct permissions on .ssh folder':
-  command => '/bin/chmod 0700 /root/.ssh',
-  path    => '/bin',
-  require => File['/root/.ssh'],
-}
-
-exec { 'Set correct permissions on .ssh/config file':
-  command => '/bin/chmod 0600 /root/.ssh/config',
-  path    => '/bin',
-  require => File['/root/.ssh/config'],
-}
