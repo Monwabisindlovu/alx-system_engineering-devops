@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-#install nginx and redirects to holberton school string
-sudo apt-get -y update
+#  Install nginx web server
+sudo apt-get update
 sudo apt-get -y install nginx
-file1=/usr/share/nginx/html/index.html
-sudo bash -c "echo 'Holberton School ftw!' > $file1"
-service nginx start
+# be listening on port 80
+sudo ufw allow "Nginx HTTP"
+sudo chmod '0777' /var/www/html/index.nginx-debian.html
+echo "Holberton School" > /var/www/html/index.nginx-debian.html
+# Start Nginx
+sudo service nginx start
