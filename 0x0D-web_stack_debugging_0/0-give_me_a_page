@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Start the Docker container
+sudo docker run -p 8080:80 -d -it holbertonschool/265-0
+
+# Check if Docker is running
+sudo service docker start
+
+# Check the running containers
+sudo docker ps
+
+# Connect to the running container
+container_id=$(sudo docker ps -q)
+sudo docker exec -it "$container_id" /bin/bash
+
+# Start Apache if not running
+sudo service apache2 start
+
+# Check and fix any issues in the Apache error log
+tail -f /var/log/apache2/error.log
+
+# Verify Apache is listening on port 80
+netstat -tulpn | grep :80
+
+# Check Apache configuration for errors
+apache2ctl configtest
+
+# Exit the container
+exit
