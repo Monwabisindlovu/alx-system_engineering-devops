@@ -1,24 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Configures a new Ubuntu machine to install nginx and set up a page
+
+# Update the package lists for upgrades and new package installations
+apt-get update -y
 
 # Install nginx
-apt-get update
-apt-get install -y nginx
+apt-get install nginx -y
 
-# Configure nginx to listen on port 80
-sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
+# Start nginx
+service nginx start
 
-# Restart nginx (without using systemctl)
+# Create a new index.html file
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
+
+# Replace the default server block configuration with our new configuration
+sed -i 's/listen 80 default_server;/listen 8080 default_server;/g' /etc/nginx/sites-available/default
+sed -i 's/listen [::]:80 default_server;/listen [::]:8080 default_server;/g' /etc/nginx/sites-available/default
+
+# Restart nginx to apply the changes
 service nginx restart
-
-# Create a Hello World page
-echo "Hello World!" > /var/www/html/index.html
-
-# Redirect nginx logs to /tmp/nginx_error.log
-sed -i 's/error_log  /var/log/nginx/error.log;/error_log  \/tmp\/nginx_error.log;/g' /etc/nginx/nginx.conf
-
-# Redirect error logs to /tmp/nginx_error.log
-touch /tmp/nginx_error.log
-
-# Display the logs
-tail -f /tmp/nginx_error.log
-
