@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Configures a new Ubuntu machine to install nginx and set up a page
 
 # Update the package lists for upgrades and new package installations
@@ -19,3 +20,4 @@ sed -i 's/listen [::]:80 default_server;/listen [::]:8080 default_server;/g' /et
 
 # Restart nginx to apply the changes
 service nginx restart
+
