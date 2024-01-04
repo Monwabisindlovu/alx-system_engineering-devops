@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # upload configuration file to a server
 class nginx_install {
     package { 'nginx':
@@ -35,4 +34,3 @@ class nginx_redirect {
 
 include nginx_install
 include nginx_redirect
-
