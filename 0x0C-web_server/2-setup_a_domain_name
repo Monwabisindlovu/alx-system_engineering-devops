@@ -1,4 +1,1 @@
-#!/usr/bin/env bash
-# Provide your domain name without subdomain
-DOMAIN_NAME="monwabisindlovu.tech"
-echo "The domain name is: $DOMAIN_NAME"
+monwabisindlovu.tech
