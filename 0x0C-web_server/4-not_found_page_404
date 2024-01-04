@@ -1,39 +1,17 @@
 #!/usr/bin/env bash
-# Configures Nginx to have a custom 404 page with the required string
+# Configures Nginx to serve a custom 404 page with "Ceci n'est pas une page"
 
-# Install Nginx package
+# Update and install Nginx
 sudo apt-get update
 sudo apt-get install -y nginx
 
-# Set ownership for the web directory
-sudo chown -R www-data:www-data /var/www/html
+# Create the custom 404 page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html
 
-# Create custom 404 page with the required string
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/error_404.html > /dev/null
+# Update Nginx configuration to serve the custom 404 page
+sudo sed -i '/server_name _;/a error_page 404 /custom_404.html;' /etc/nginx/sites-available/default
+sudo sed -i '/error_page 404/a location = /custom_404.html { root /var/www/html; internal; }' /etc/nginx/sites-available/default
 
-# Create Nginx configuration for custom 404 page
-sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/default
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    root /var/www/html;
-    index index.html index.htm index.nginx-debian.html;
-    server_name _;
-    location / {
-        try_files $uri $uri/ =404;
-    }
-    error_page 404 /error_404.html;
-    location = /error_404.html {
-        root /var/www/html;
-        internal;
-        rewrite ^.*$ /error_404.html last;
-    }
-}
-EOF'
-
-# Enable the new Nginx configuration
-sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
-# Restart Nginx to apply changes
+# Restart Nginx to apply the changes
 sudo service nginx restart
 
