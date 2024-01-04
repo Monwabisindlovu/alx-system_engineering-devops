@@ -1,19 +1,2 @@
 #!/usr/bin/env bash
-
-# Provide the domain name only (no subdomain)
-echo "myproject.tech"
-
-# Configure DNS records with an A entry
-# Note: Replace "your_web_01_ip" with the actual IP address of your web-01 server
-echo "Configuring DNS records..."
-# You can use the command below or log in to your domain registrar's website to add the A record.
-# The propagation of DNS records may take time (~1-2 hours).
-# Replace "your_web_01_ip" with the actual IP address of your web-01 server.
-# nsupdate -v -k /etc/bind/Kexample.com.+157+11235.private << EOF
-# server your_dns_server_ip
-# update add myproject.tech. 3600 A your_web_01_ip
-# send
-# EOF
-
-# Go to your profile and enter your domain in the Project website URL field
-echo "Don't forget to update your profile with the domain name."
+monwabisindlovu.tech
