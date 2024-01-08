@@ -1,0 +1,31 @@
+# File: 2-puppet_custom_http_response_header.pp
+
+# Install Nginx
+class { 'nginx': }
+
+# Define a custom fact to get the server's hostname
+$server_hostname = $facts['hostname']
+
+# Configure Nginx with custom HTTP header
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => template('nginx/default.erb'),
+  notify  => Service['nginx'],
+}
+
+# Nginx configuration template
+file { '/etc/nginx/nginx.conf':
+  ensure  => file,
+  content => template('nginx/nginx.conf.erb'),
+  notify  => Service['nginx'],
+}
+
+# Define Nginx service
+service { 'nginx':
+  ensure  => running,
+  enable  => true,
+  require => File['/etc/nginx/sites-available/default'],
+}
+
+# End of Puppet manifest
+
