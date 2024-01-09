@@ -1,15 +1,35 @@
 #!/usr/bin/env bash
 
-# Install Nginx if not already installed
-sudo apt-get update
-sudo apt-get install -y nginx
+# Configures an Ubuntu machine with nginx and adds a custom Nginx response header
 
-# Create a custom Nginx configuration file
-echo 'add_header X-Served-By $hostname;' | sudo tee /etc/nginx/custom_header
+FILE="/etc/nginx/sites-available/default"
+ERRORFILE="/usr/share/nginx/html/404error.html"
 
-# Include the custom configuration in the main Nginx configuration
-echo 'include /etc/nginx/custom_header;' | sudo tee -a /etc/nginx/nginx.conf
+REDIRECT="\n\tlocation /redirect_me {\n\t\treturn 301 https://youtu.be/dQw4w9WgXcQ;\n\t}\n"
+ERRORREDIRECT="\n\terror_page 404 /404error.html;\n\tlocation = /404error.html {\n\t\troot /usr/share/nginx/html;\n\t\tinternal;\n\t}\n"
+CUSTOMHEADER='\n\tadd_header X-Served-By $hostname;\n'
 
-# Restart Nginx to apply the changes
-sudo service nginx restart
+STRING="Hello World!"
+FOUR="Ceci n'est pas une page"
+
+# Update and install Nginx
+apt-get -y update
+apt-get -y install nginx
+
+# Allow Nginx through the firewall
+ufw allow 'Nginx HTTP'
+
+# Create an index file
+echo "$STRING" > /var/www/html/index.nginx-debian.html
+
+# Configure Nginx with redirects and custom header
+sed -i "37i\ $REDIRECT" "$FILE"
+sed -i "37i\ $ERRORREDIRECT" "$FILE"
+sed -i "37i\ $CUSTOMHEADER" "$FILE"
+
+# Create a custom 404 error page
+echo "$FOUR" > "$ERRORFILE"
+
+# Restart Nginx
+service nginx restart
 

@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-#sarver 01 log command
+# This script connects to the server using ssh with a private key
 
-#setting up the ssh_agent
-eval "$(ssh-agent)"
+# Display a message to confirm that the script is being executed
+echo "Connecting to the server..."
 
-#path to identityfile
-ssh-add ~/.ssh/school
-
-#Hostname and IP address
-ssh ubuntu@52.205.179.185
+# Use ssh with the private key ~/.ssh/school and the user ubuntu
+ssh -v -i ~/.ssh/school ubuntu@54.157.130.186

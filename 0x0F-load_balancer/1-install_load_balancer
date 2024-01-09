@@ -1,16 +1,35 @@
 #!/usr/bin/env bash
-#sets up load balancers
-sudo apt install -y haproxy=1.5\*
-file=/etc/haproxy/haproxy.cfg
-sudo echo -e "frontend haproxynode
-\tbind *:80
-\tmode http
-\tdefault_backend nodes" | sudo tee -a $file
-sudo echo -e "backend nodes
-\tmode http
-\tbalance roundrobin
-\toption forwardfor
-\thttp-request set-header X-Forwarded-Port %[dst_port]
-\tserver 274-web-01 35.231.71.122:80 check
-\tserver 274-web-02 35.196.73.169:80 check" | sudo tee -a $file
-sudo service haproxy restart
+# Installs Nginx and configures it as a load balancer
+
+# Update your package lists
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Remove the default Nginx configuration file
+sudo rm /etc/nginx/sites-enabled/default
+
+# Create a new Nginx configuration file
+sudo touch /etc/nginx/sites-enabled/load_balancer
+
+# Write the configuration for the load balancer
+echo "upstream backend {
+    server 52.206.18.131;
+    server 54.157.130.186;
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://backend;
+    }
+}" | sudo tee /etc/nginx/sites-enabled/load_balancer
+
+# Test the Nginx configuration
+sudo nginx -t
+
+# Restart Nginx to apply the changes
+sudo systemctl restart nginx
+

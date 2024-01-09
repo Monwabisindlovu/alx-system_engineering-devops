@@ -1,16 +1,17 @@
-# File: nginx/default.erb
+# File: 2-puppet_custom_http_response_header.pp
 
 server {
     listen 80 default_server;
-    listen [::]:80 default_server;
-
     server_name _;
+    root /var/www/html;
 
     location / {
-        root /var/www/html;
-        index index.html;
+        try_files $uri $uri/ =404;
+        add_header X-Served-By <%= $server_hostname %>;
     }
 
-    add_header X-Served-By <%= @server_hostname %>;
+    location = /404.html {
+        root /var/www/html;
+    }
 }
 

@@ -1,37 +1,21 @@
-#/bin/bash
-chmod u+x *
-# this will automate the previous task i've done(creating custom header for the http response)
+# File: 2-puppet_custom_http_response_header.pp
+
+# Update package repository
 exec { 'update':
-  command => '/usr/bin/apt-get update',
+  command  => 'sudo apt-get update',
+  provider => shell,
 }
-
-package { 'nginx':
-  ensure  => 'present',
-  require => Exec['update'],
+-> package {'nginx':
+  ensure => present,
 }
-
-file_line { '404':
-  ensure  => 'present',
-  path    => '/etc/nginx/sites-enabled/default',
-  after   => 'listen 80 default_server;',
-  line    => 'rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;',
-  require => Package['nginx'],
+-> file_line { 'header line':
+  ensure => present,
+  path   => '/etc/nginx/sites-available/default',
+  line   => "	location / {
+  add_header X-Served-By ${hostname};",
+  match  => '^\tlocation / {',
 }
-
-file_line { 'add_header':
-  ensure  => 'present',
-  path    => '/etc/nginx/sites-enabled/default',
-  after   => 'listen80 default_server;',
-  line    => 'add_header X-Served-By $hostname;',
-  require => Package['nginx'],
-}
-
-file { '/var/www/html/index.html':
-  content => 'Holberton School',
-  require => Package['nginx'],
-}
-
-service { 'nginx':
-  ensure  => running,
-  require => Package['nginx'],
+-> exec { 'restart service':
+  command  => 'sudo service nginx restart',
+  provider => shell,
 }
