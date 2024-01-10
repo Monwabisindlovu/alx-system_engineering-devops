@@ -1,29 +1,9 @@
 #!/usr/bin/env bash
-# This script checks if nginx is running and makes it listen on port 80
+# This script fixes Nginx not listening on port 80 issue
 
-# Check if nginx is installed
-if ! command -v nginx &> /dev/null
-then
-    echo "nginx could not be found"
-    exit
-fi
+# Update Nginx configuration to listen on port 80
+sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
 
-# Check if nginx is running, if not, start it
-if ! pgrep -x "nginx" > /dev/null
-then
-    service nginx start
-fi
-
-# Check if nginx is listening on port 80
-if ! netstat -tuln | grep :80.*nginx > /dev/null
-then
-    # Get the server block file
-    server_block_file=$(grep -rl 'listen 80' /etc/nginx/sites-available)
-
-    # Change the listen directive to port 80
-    sed -i 's/listen .*/listen 80;/' "$server_block_file"
-
-    # Restart nginx to apply the changes
-    service nginx restart
-fi
+# Restart Nginx to apply changes
+service nginx restart
 
