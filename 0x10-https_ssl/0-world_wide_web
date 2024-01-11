@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# This script displays information about subdomains for a given domain.
+
+domain="$1"
+subdomain="$2"
+
+if [ -z "$domain" ]; then
+    echo "Usage: $0 domain [subdomain]"
+    exit 1
+fi
+
+function query_subdomain {
+    local sub="$1"
+    dig "${sub}.${domain}" +short | {
+        read -r ip
+        if [ -z "$ip" ]; then
+            echo "The subdomain $sub is not a record for $domain"
+        else
+            echo "The subdomain $sub is a $(dig "${sub}.${domain}" +short -t ANY | grep -E '^[A-Z]+\s' | awk '{print $1}' | uniq) record and points to $ip"
+        fi
+    }
+}
+
+if [ -z "$subdomain" ]; then
+    query_subdomain "www"
+    query_subdomain "lb-01"
+    query_subdomain "web-01"
+    query_subdomain "web-02"
+else
+    query_subdomain "$subdomain"
+fi
+
