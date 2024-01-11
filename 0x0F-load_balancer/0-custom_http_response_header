@@ -1,43 +1,28 @@
 #!/usr/bin/env bash
+# Customizing a 404-error_page
 
-# Install nginx
-apt-get -y update
-apt-get -y install nginx
+# Updating Packages before performing installations
+sudo apt-get update
+sudo apt-get install -y nginx
 
-# Configure nginx to listen on port 80
-sed -i "s/^listen .*/listen 80/" /etc/nginx/sites-enabled/default
+# Creating an index.html page
+echo "Hello World!" | sudo tee /var/www/html/index.html
 
-# Allow Nginx through the firewall
-ufw allow 'Nginx HTTP'
+# Performing a "moved permanently redirection" (301)
+new_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/besthor permanent;"
+sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
 
-# Create a simple HTML page
-mkdir -p /var/www/html
-echo 'Hello World!' > /var/www/html/index.html
+# Creating a 404 Custom error page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+new_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
 
-# Add a redirect and custom error page to the nginx configuration
-file="/etc/nginx/sites-enabled/default"
-redirect="\    rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4/ permanent;"
-sed -i "/server_name _;/a ${redirect}" "$file"
+sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-enabled/default
 
-echo "Ceci n'est pas une page" > /usr/share/nginx/html/custom_404.html
-err="\    error_page 404 /custom_404.html;\n\    location = /custom_404.html  {\n\t\troot /usr/share/nginx/html;\n\t\tinternal;\n\t}"
-sed -i "/server_name _;/a ${err}" "$file"
+# Creating an HTTP response header
+sudo sed -i "/server_name _/a add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-enabled/default
 
-# Add a custom header with the hostname
-hostname_value=$(hostname)
-custom_header="\    add_header X-Served-By $hostname_value;"
-sed -i "/server_name _;/a ${custom_header}" "$file"
+# Testing configurations for syntax errors
+sudo nginx -t
 
-# Restart Nginx
-service nginx restart
-
-# Test the custom header by querying each server's IP
-web_server_1="34.198.248.145"
-web_server_2="54.89.38.100"
-
-echo "Testing X-Served-By header on $web_server_1:"
-curl -sI $web_server_1 | grep X-Served-By
-
-echo "Testing X-Served-By header on $web_server_2:"
-curl -sI $web_server_2 | grep X-Served-By
-
+# Restart nginx after implementing changes
+sudo service nginx restart
