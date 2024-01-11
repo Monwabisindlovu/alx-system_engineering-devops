@@ -1,20 +1,36 @@
 #!/usr/bin/env bash
-# Installs Nginx and configures it as a load balancer
+## Install your load balancer (https://haproxy.debian.net/)
 
-# provided you have the correct files
+### Update operating system packages.
+sudo apt-get -y update
 
-# using my web servera in sudo mode (as root)
-sudo su
+### Install (software-properties-common)
+#### This software provides an abstraction of the used apt repositories. It allows you to easily manage your distribution and independent software vendor software sources.
+#### In practice that means it provides some useful scripts for adding and removing PPAs.
+#sudo apt-get install -y --no-install-recommends software-properties-common
+apt-get -y install software-properties-common
 
-# installing the nginx server newly with some configurations
-./1-install_nginx_web_server
+### Adding PPA (vbernat/haproxy-2.4)
+sudo add-apt-repository -y ppa:vbernat/haproxy-2.4
 
-# enabling the redirect me
-./3-redirection
+### Install load balancer.
+sudo apt-get -y install haproxy=2.4.\*
 
-# handling the error page
-./4-not_found_page_404
+### Add "ubuntu" user as owner
+sudo chown -R ubuntu /etc/haproxy/
 
-# hadding headers to tell with servee took in the requeat
-./0-custom_http_response_header
+### Configure HAproxy so that it send traffic to web-01 and web-02 and distribute requests using a roundrobin algorithm
+echo -e "\n# Configure frontend (http) listen all *:80 and solve with backend (my-servers)\
+\nfrontend http\
+\n\tbind *:80\
+\n\tmode http\
+\n\tdefault_backend my-servers\
+\n\
+\n# Configure all server availables for frontend (http)\
+\nbackend my-servers\
+\n\tbalance roundrobin\
+\n\tserver 3716-web-01 52.206.18.131 check\
+\n\tserver 3716-web-02 54.157.130.186 check" >> /etc/haproxy/haproxy.cfg
 
+### Start service.
+sudo service haproxy restart
