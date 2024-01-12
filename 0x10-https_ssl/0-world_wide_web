@@ -1,36 +1,20 @@
 #!/usr/bin/env bash
 
 # Function to check subdomain records
-check_subdomain() {
-    local domain=$1
-    local subdomain=$2
-    local record
-
-    # Use dig to get the A record for the subdomain
-    record=$(dig +short A "$subdomain.$domain")
-
-    # Check if the record exists
-    if [[ -n $record ]]; then
-        echo "The subdomain $subdomain is a A record and points to $record"
-    else
-        echo "The subdomain $subdomain does not have an A record."
-    fi
+# This script will get the subdomains of a domain and print them out
+get_subdomains() {
+	domain="$1"
+	subdomain="$2"
+	subdomains=("www" "lb-01" "web-01" "web-02")
+	if [ "$subdomain" ]; then
+		ip=$(dig "$subdomain.$domain" | awk '/^;; ANSWER SECTION:$/ { getline; print $5 }')
+		echo "The subdomain $subdomain is a A record and points to $ip"
+	else
+		for sub in "${subdomains[@]}"; do
+			ip=$(dig "$sub.$domain" | awk '/^;; ANSWER SECTION:$/ { getline; print $5 }')
+			echo "The subdomain $sub is a A record and points to $ip"
+		done
+	fi
 }
 
-# Main script logic
-domain=$1
-subdomain=$2
-
-# Check if only the domain is provided
-if [[ -n $domain && -z $subdomain ]]; then
-    # Display information for default subdomains
-    for sub in www lb-01 web-01 web-02; do
-        check_subdomain "$domain" "$sub"
-    done
-elif [[ -n $domain && -n $subdomain ]]; then
-    # Display information for the specified subdomain
-    check_subdomain "$domain" "$subdomain"
-else
-    echo "Usage: $0 domain [subdomain]"
-fi
-
+get_subdomains "$1" "$2"
