@@ -2,8 +2,8 @@
 #content of 0-block_all_incoming_traffic_but
 
 #Install UFW
-sudo apt update
-sudo apt install ufw
+sudo apt-get update
+sudo apt-get install ufw
 
 #Set Default Policies 
 sudo ufw default deny incoming
