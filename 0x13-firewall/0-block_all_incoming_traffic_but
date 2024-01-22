@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#content of 0-block_all_incoming_traffic_but
+#task 0 content of 0-block_all_incoming_traffic_but
 
 #Install UFW
 sudo apt-get update
