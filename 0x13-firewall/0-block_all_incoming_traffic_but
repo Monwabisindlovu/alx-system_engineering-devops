@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#Content of 0-block_all_incoming_traffic_but
+
 
 # Install ufw
 sudo apt-get update
