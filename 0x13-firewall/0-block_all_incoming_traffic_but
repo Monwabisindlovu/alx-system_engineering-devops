@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-
 # Configure ufw so that it blocks all incoming traffic
-# except the following TCP ports: 22 (SSH), 443 (HTTPS SSL), 80 (HTTP)
+# except the following TCP ports:
+# 22 (SSH)
+# 443 (HTTPS SSL)
+# 80 (HTTP)
 
 apt-get -y update
 apt-get -y install ufw
@@ -15,4 +17,3 @@ ufw allow 80/tcp
 ufw allow 443/tcp
 
 ufw enable
-
