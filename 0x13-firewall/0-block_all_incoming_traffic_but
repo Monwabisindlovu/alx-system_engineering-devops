@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
+#content of 0-block_all_incoming_traffic_but
 
+#Install UFW
 sudo apt update
 sudo apt install ufw
+
+#Set Default Policies 
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
+
+#Allow Specific Ports
 sudo ufw allow 22/ssh
 sudo ufw allow 443/tcp
 sudo ufw allow 80/tcp
+
+#enambe UFW
 sudo ufw enable
 
+#config rules
+sudo ufw status
