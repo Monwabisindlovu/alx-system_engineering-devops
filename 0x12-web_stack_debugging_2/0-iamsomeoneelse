@@ -2,9 +2,8 @@
 # This script runs the whoami command under the user passed as an argument
 
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 username"
+    echo "Usage: $0 user"
     exit 1
 fi
 
-sudo -u $1 whoami
-
+sudo -u "$1" whoami
