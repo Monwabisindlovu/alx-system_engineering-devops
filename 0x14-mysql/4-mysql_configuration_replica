@@ -1,0 +1,11 @@
+onfiguration for web-02
+echo "[mysqld]" | sudo tee /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "bind-address = 0.0.0.0" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "server-id = 2" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "relay-log = /var/log/mysql/mysql-relay-bin.log" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "log_bin = /var/log/mysql/mysql-bin.log" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "binlog_do_db = tyrell_corp" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# Restart the MySQL service for the changes to take effect
+sudo service mysql restart
+
