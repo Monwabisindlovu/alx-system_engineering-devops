@@ -1,33 +1,22 @@
 #!/usr/bin/python3
 """
-Module to export data to CSV.
+uses a REST API to return inforamtion about an employee given their
+employee ID
 """
-
 import csv
 import requests
+import sys
 
-"""Get the user ID from the command line argument"""
-user_id = sys.argv[1]
 
-""" Get the user information from the API"""
-user_url = "https://jsonplaceholder.typicode.com/users/{}".format(user_id)
-user_response = requests.get(user_url)
-user_data = user_response.json()
-user_name = user_data.get("username")
+if __name__ == "__main__":
+    user_id = sys.argv[1]
+    url = "https://jsonplaceholder.typicode.com/"
+    user = requests.get(url + "users/{}".format(user_id)).json()
+    username = user.get("username")
+    todos = requests.get(url + "todos", params={"userId": user_id}).json()
 
-"""Get the tasks information from the API"""
-tasks_url = "https://jsonplaceholder.typicode.com/todos?userId={}".format(user_id)
-tasks_response = requests.get(tasks_url)
-tasks_data = tasks_response.json()
-
-"""Create a CSV file with the user ID as the name"""
-file_name = "{}.csv".format(user_id)
-with open(file_name, "w", newline="") as csv_file:
-    """Create a CSV writer object"""
-    csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
-    """Loop through the tasks data and write each row"""
-    for task in tasks_data:
-        task_id = task.get("id")
-        task_title = task.get("title")
-        task_completed = task.get("completed")
-        csv_writer.writerow([user_id, user_name, task_completed, task_title])
+    with open("{}.csv".format(user_id), "w", newline="") as csvfile:
+        writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+        [writer.writerow(
+            [user_id, username, t.get("completed"), t.get("title")]
+        ) for t in todos]
