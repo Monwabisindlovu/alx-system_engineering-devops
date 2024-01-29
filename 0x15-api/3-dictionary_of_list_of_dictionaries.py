@@ -1,43 +1,43 @@
 #!/usr/bin/python3
-"""
-Extend the Python script to export data in the JSON format.
-"""
-
+'''A script that gathers data from an API and exports it to a JSON file.
+'''
 import json
 import requests
-from sys import argv
 
-if __name__ == "__main__":
-    user_id = argv[1]
-    url_user = f"https://jsonplaceholder.typicode.com/users/{user_id}"
-    url_todos = f"https://jsonplaceholder.typicode.com/todos?userId={user_id}"
 
-    response_user = requests.get(url_user)
-    response_todos = requests.get(url_todos)
+API_URL = 'https://jsonplaceholder.typicode.com'
+"""
+The URL of the JSONPlaceholder API.
+"""
 
-    user_data = response_user.json()
-    tasks_data = response_todos.json()
 
-    username = user_data.get('username')
+if __name__ == '__main__':
+    # Make an API call to get users data
+    users_res = requests.get('{}/users'.format(API_URL)).json()
+    # Make an API call to get todos data
+    todos_res = requests.get('{}/todos'.format(API_URL)).json()
+    # Initialize a dictionary to store users' data
+    users_data = {}
 
-    # Task 1: Export data to individual JSON file
-    output_filename = f"{user_id}.json"
-    with open(output_filename, 'w') as json_file:
-        user_tasks = [{"task": task.get('title'), "completed": task.get('completed'), "username": username} for task in tasks_data]
-        json.dump({user_id: user_tasks}, json_file)
+    # Iterate through each user
+    for user in users_res:
+        # Extract user ID and username
+        id = user.get('id')
+        user_name = user.get('username')
+        # Filter todos associated with the user
+        todos = list(filter(lambda x: x.get('userId') == id, todos_res))
+        # Prepare user's data
+        user_data = list(map(
+            lambda x: {
+                'username': user_name,
+                'task': x.get('title'),
+                'completed': x.get('completed')
+            },
+            todos
+        ))
+        # Store user's data in the dictionary
+        users_data['{}'.format(id)] = user_data
 
-    # Task 2: Export data to a single JSON file for all employees
-    all_employees_filename = "todo_all_employees.json"
-    all_employees_data = {user_id: [{"username": username, "task": task.get('title'), "completed": task.get('completed')} for task in tasks_data]}
-
-    # If the file already exists, load the existing data and update it
-    try:
-        with open(all_employees_filename, 'r') as all_employees_file:
-            existing_data = json.load(all_employees_file)
-            existing_data.update(all_employees_data)
-    except FileNotFoundError:
-        existing_data = all_employees_data
-
-    with open(all_employees_filename, 'w') as all_employees_file:
-        json.dump(existing_data, all_employees_file)
-
+    # Write the JSON data to a file
+    with open('todo_all_employees.json', 'w') as file:
+        json.dump(users_data, file)
