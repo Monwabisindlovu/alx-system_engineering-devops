@@ -20,4 +20,4 @@ def number_of_subscribers(subreddit):
     if "data" in data and "subscribers" in data["data"]:
         return data["data"]["subscribers"]
     else:
-        return 0
+        return (0)
