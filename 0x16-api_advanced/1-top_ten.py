@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """
-1-top_ten.py
+This script provides a recursive function to query the Reddit API and return
+a list containing the titles of the top posts from a given subreddit.
 """
 
 import requests
@@ -24,7 +25,7 @@ v1.0.0 (by /u/firdaus_cartoon_jr)"
     response = requests.get(url, headers=headers, params=params,
                             allow_redirects=False)
     if response.status_code == 404:
-        return None
+        return (None)
 
     results = response.json().get("data")
     after = results.get("after")
@@ -34,4 +35,4 @@ v1.0.0 (by /u/firdaus_cartoon_jr)"
 
     if after is not None:
         return recurse(subreddit, hot_list, after, count)
-    return hot_list
+    return (hot_list)
