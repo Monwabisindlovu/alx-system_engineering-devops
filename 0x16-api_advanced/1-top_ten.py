@@ -1,31 +1,37 @@
 #!/usr/bin/python3
 """
-Function to print hot posts on a given Reddit subreddit.
+1-top_ten.py
 """
+
 import requests
 
-def top_ten(subreddit):
+
+def recurse(subreddit, hot_list=[], after="", count=0):
     """
-    Print the titles of the 10 hottest posts on a given subreddit.
+    recursive function that queries the Reddit API and returns
+    a list containing the titles
     """
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
     headers = {
-        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
+        "User-Agent": "0x16-api_advanced:project:\
+v1.0.0 (by /u/firdaus_cartoon_jr)"
     }
     params = {
-        "limit": 10
+        "after": after,
+        "count": count,
+        "limit": 100
     }
-    response = requests.get(url, headers=headers, params=params)
+    response = requests.get(url, headers=headers, params=params,
+                            allow_redirects=False)
+    if response.status_code == 404:
+        return None
 
-    if response.status_code == 200:
-        data = response.json().get("data", {}).get("children", [])
-        for post in data:
-            title = post.get("data", {}).get("title")
-            print(title)
-    else:
-        print("No posts found.")
+    results = response.json().get("data")
+    after = results.get("after")
+    count += results.get("dist")
+    for c in results.get("children"):
+        hot_list.append(c.get("data").get("title"))
 
-if __name__ == "__main__":
-    subreddit = input("Enter the subreddit: ")
-    top_ten(subreddit)
-
+    if after is not None:
+        return recurse(subreddit, hot_list, after, count)
+    return hot_list
