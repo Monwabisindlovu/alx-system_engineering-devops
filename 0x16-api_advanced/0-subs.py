@@ -1,13 +1,23 @@
 #!/usr/bin/python3
 """
-100-main
+Queries the Reddit API and returns the number of subscribers
+(not active users, total subscribers) for a given subreddit.
 """
-import sys
 
-if __name__ == '__main__':
-    count_words = __import__('100-count').count_words
-    if len(sys.argv) < 3:
-        print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
-        print("Ex: {} programming 'python java javascript'".format(sys.argv[0]))
+import requests
+
+
+def number_of_subscribers(subreddit):
+    """
+    Returns the number of subscribers for a given subreddit.
+    If an invalid subreddit is given, the function return 0.
+    """
+    api_url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+
+    response = requests.get(api_url, headers={"User-Agent": "My-User-Agent"},
+                            allow_redirects=False)
+    data = response.json()
+    if "data" in data and "subscribers" in data["data"]:
+        return data["data"]["subscribers"]
     else:
-        result = count_words(sys.argv[1], [x for x in sys.argv[2].split()])
+        return 0
