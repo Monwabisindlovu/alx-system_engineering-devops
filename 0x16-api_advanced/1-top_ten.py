@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """
 This script provides a recursive function to query the Reddit API and return
-a list containing the titles of the top posts from a given subreddit.
-"""
+   a list containing the titles of the top posts from a given subreddit.
+   """
 
 import requests
 
@@ -15,7 +15,7 @@ def recurse(subreddit, hot_list=[], after="", count=0):
     url = "https://www.reddit.com/r/{}/hot/.json".format(subreddit)
     headers = {
         "User-Agent": "0x16-api_advanced:project:\
-v1.0.0 (by /u/firdaus_cartoon_jr)"
+    v1.0.0 (by /u/firdaus_cartoon_jr)"
     }
     params = {
         "after": after,
