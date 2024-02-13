@@ -1,32 +1,13 @@
 #!/usr/bin/python3
 """
-0-subs
+100-main
 """
-
-import requests
-
-def number_of_subscribers(subreddit):
-    """
-    Returns the number of subscribers for a given subreddit.
-
-    Args:
-        subreddit (str): The name of the subreddit.
-
-    Returns:
-        int: The number of subscribers, or 0 if the subreddit is invalid.
-    """
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {'User-Agent': 'Mozilla/5.0'}  # Set a custom User-Agent to avoid 429 Too Many Requests error
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        return data['data']['subscribers']
-    else:
-        return 0
+import sys
 
 if __name__ == '__main__':
-    # Testing the function
-    subreddit = input("Enter subreddit name: ")
-    print(number_of_subscribers(subreddit))
-
+    count_words = __import__('100-count').count_words
+    if len(sys.argv) < 3:
+        print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
+        print("Ex: {} programming 'python java javascript'".format(sys.argv[0]))
+    else:
+        result = count_words(sys.argv[1], [x for x in sys.argv[2].split()])
