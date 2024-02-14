@@ -1,8 +1,5 @@
-# This Puppet manifest fixes the issue causing Apache to return a 500 error
-
-exec { 'fix-wordpress':
-  command => 'chown -R www-data:www-0 /var/lib/php/sessions && chmod -R 770 /var/lib/php/sessions',
-  onlyif  => '/usr/bin/test -d /var/lib/php/sessions',
-  require => Package['php'],
+# Corrects a typo in wordpress settings and fixes 500 error
+exec { 'fix_typo':
+  command =>   "sed -i 's/phpp/php/g' /var/www/html/wp-settings.php",
+  path    =>   '/bin'
 }
-
