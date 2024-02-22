@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
+# Reload Gunicorn without downtime
 
-# Get the PID of the master Gunicorn process
-master_pid=$(ps auxf | grep gunicorn | grep -v grep | awk '{print $2}')
+# Define the name of the Gunicorn application (as per your setup)
+APP_NAME="web_flask.0-hello_route:app"
 
-# Send a HUP signal to the master Gunicorn process
-kill -HUP $master_pid
+# Define the Gunicorn PID file location
+PID_FILE="/var/run/gunicorn.pid"
 
-# Wait for the old worker processes to exit
-while [ $(ps auxf | grep gunicorn | grep -v grep | wc -l) -gt 1 ]; do
-    sleep 1
-done
+# Check if the Gunicorn PID file exists
+if [ -f "$PID_FILE" ]; then
+    # Reload Gunicorn by sending the HUP signal to the master process
+    kill -HUP $(cat "$PID_FILE")
+    echo "Gunicorn reloaded successfully."
+else
+    echo "Gunicorn PID file does not exist."
+fi
 
-# Wait for the new worker processes to start
-while [ $(ps auxf | grep gunicorn | grep -v grep | wc -l) -lt 4 ]; do
-    sleep 1
-done
-
-echo "Gunicorn reloaded successfully"
