@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
+# /etc/nginx/sites-available/5-app_server-nginx_config
 
 server {
+    listen 80 default_server;
+    server_name _;
+
     location / {
         proxy_pass http://127.0.0.1:5003;
     }
