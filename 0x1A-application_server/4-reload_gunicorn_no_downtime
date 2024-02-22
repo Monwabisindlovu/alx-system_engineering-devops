@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
-# Gracefully reload gunicorn worker processes
 
-pid=$(pgrep gunicorn | head -n 1)
-# pid=$(pgrep gunicorn | awk 'NR==1{print $1}')
-# pid=$(ps -auxf | grep gunicorn | awk 'NR == 2 {print $2}')
+# Get the PID of the master Gunicorn process
+master_pid=$(ps auxf | grep gunicorn | grep -v grep | awk '{print $2}')
 
-kill -HUP "$pid"
+# Send a HUP signal to the master Gunicorn process
+kill -HUP $master_pid
+
+# Wait for the old worker processes to exit
+while [ $(ps auxf | grep gunicorn | grep -v grep | wc -l) -gt 1 ]; do
+    sleep 1
+done
+
+# Wait for the new worker processes to start
+while [ $(ps auxf | grep gunicorn | grep -v grep | wc -l) -lt 4 ]; do
+    sleep 1
+done
+
+echo "Gunicorn reloaded successfully"
