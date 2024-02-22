@@ -1,18 +1,13 @@
-#!/usr/bin/env bash
-# Reload Gunicorn without downtime
+#!/bin/bash
 
-# Define the name of the Gunicorn application (as per your setup)
-APP_NAME="web_flask.0-hello_route:app"
+# Find the Gunicorn master process id
+GUNICORN_PID=$(pgrep -f 'gunicorn.*master')
 
-# Define the Gunicorn PID file location
-PID_FILE="/var/run/gunicorn.pid"
-
-# Check if the Gunicorn PID file exists
-if [ -f "$PID_FILE" ]; then
-    # Reload Gunicorn by sending the HUP signal to the master process
-    kill -HUP $(cat "$PID_FILE")
-    echo "Gunicorn reloaded successfully."
+# Check if Gunicorn is running
+if [ -n "$GUNICORN_PID" ]; then
+    # Send the HUP signal to Gunicorn master process
+    kill -HUP $GUNICORN_PID
+    echo "Gunicorn reloaded gracefully"
 else
-    echo "Gunicorn PID file does not exist."
+    echo "Gunicorn is not running"
 fi
-
