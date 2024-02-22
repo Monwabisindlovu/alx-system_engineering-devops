@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Send graceful reload signal to Gunicorn master process
+kill -HUP $(pgrep gunicorn)
+
+echo "Gunicorn reloaded gracefully"

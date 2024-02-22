@@ -1,4 +1,6 @@
-# Route for AirBnB clone - Web dynamic
+#!/usr/bin/env bash
+
+server {
     location / {
         proxy_pass http://127.0.0.1:5003;
     }
