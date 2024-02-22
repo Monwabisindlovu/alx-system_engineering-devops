@@ -1,13 +1,15 @@
-# Enable the user holberton to login and open files without error.
-# Increase hard file limit for Holberton user.
-exec { 'increase-hard-file-limit-for-holberton-user':
-  command => 'sed -i "/holberton hard/s/5/50000/" /etc/security/limits.conf',
-  path => '/usr/local/bin/:/bin/'
-}
+# 1-user_limit.pp: change the OS configuration to login with the holberton user;
+# and open a file without any error message.
 
-# Increase soft file limit for Holberton user.
-exec { 'increase-soft-file-limit-for-holberton-user':
-  command => 'sed -i "/holberton soft/s/4/50000/" /etc/security/limits.conf',
-  path => '/usr/local/bin/:/bin/'
+exec { 'correct-hard':
+  command  => 'sudo sed -i \'s/nofile 5/nofile 30000/\' /etc/security/limits.conf',
+  provider => shell,
 }
-
+exec { 'correct-soft':
+  command  => 'sudo sed -i \'s/nofile 4/nofile 10000/\' /etc/security/limits.conf',
+  provider => shell,
+}
+exec { 'change-os-configuration-for-holberton-user':
+  command  => 'sysctl -p',
+  provider => shell,
+}
