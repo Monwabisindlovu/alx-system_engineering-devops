@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-# reload gunicorn
+# Gracefully reload gunicorn worker processes
 
-# Get the process IDs (PIDs) of the Gunicorn workers using pgrep
-worker_pids=$(pgrep -f "gunicorn")
+pid=$(pgrep gunicorn | head -n 1)
+# pid=$(pgrep gunicorn | awk 'NR==1{print $1}')
+# pid=$(ps -auxf | grep gunicorn | awk 'NR == 2 {print $2}')
 
-# Iterate over the worker PIDs and send a graceful reload signal
-for pid in $worker_pids
-do
-    kill -HUP "$pid"
-done
+kill -HUP "$pid"
